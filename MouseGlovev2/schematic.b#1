@@ -156,9 +156,9 @@
 </layers>
 <board>
 <plain>
-<wire x1="0" y1="0" x2="50.292" y2="-0.02" width="0" layer="20"/>
-<wire x1="50.292" y1="-0.02" x2="50.272" y2="37.77" width="0" layer="20"/>
-<wire x1="50.272" y1="37.77" x2="0" y2="37.77" width="0" layer="20"/>
+<wire x1="0" y1="0" x2="50.272" y2="-0.254" width="0" layer="20"/>
+<wire x1="50.272" y1="-0.254" x2="50.526" y2="37.77" width="0" layer="20"/>
+<wire x1="50.526" y1="37.77" x2="0" y2="37.77" width="0" layer="20"/>
 <wire x1="0" y1="37.77" x2="0" y2="0" width="0" layer="20"/>
 </plain>
 <libraries>
@@ -730,10 +730,11 @@ Note, that not all DRC settings must be set by the manufacturer. Several can be 
 <contactref element="IMU" pad="4"/>
 <contactref element="U1" pad="2"/>
 <polygon width="0.1524" layer="1">
-<vertex x="-2.794" y="40.132"/>
-<vertex x="-2.794" y="-3.556"/>
-<vertex x="54.864" y="-3.556"/>
-<vertex x="54.864" y="40.132"/>
+<vertex x="-2.032" y="40.132"/>
+<vertex x="-2.032" y="-3.048"/>
+<vertex x="-3.048" y="-4.064"/>
+<vertex x="52.578" y="-4.064"/>
+<vertex x="52.578" y="40.132"/>
 </polygon>
 </signal>
 <signal name="SCL">
