@@ -1,15 +1,4 @@
-/****************************************************************
- * Example2_Advanced.ino
- * ICM 20948 Arduino Library Demo 
- * Shows how to use granular configuration of the ICM 20948
- * Owen Lyke @ SparkFun Electronics
- * Original Creation Date: April 17 2019
- * 
- * This code is beerware; if you see me (or any other SparkFun employee) at the
- * local, and you've found our code helpful, please buy us a round!
- * 
- * Distributed as-is; no warranty is given.
- ***************************************************************/
+
 #include "ICM_20948.h"  // Click here to get the library: http://librarymanager/All#SparkFun_ICM_20948_IMU
 #include <math.h>
 
@@ -144,47 +133,7 @@ void setup() {
   SERIAL_PORT.println(F("Configuration complete!")); 
 }
 
-void loop() {
-  if( myICM.dataReady() ){
-    myICM.getAGMT();                // The values are only updated when you call 'getAGMT'
-    float previous_RxEst = (myICM.accX()) * 1000;
-    float previous_RyEst = (myICM.accY()) * 1000;
-    float previous_RzEst = (myICM.accZ()) * 1000;
-    float RzGyro = 0;
-    while (1) {
-      myICM.getAGMT();
-      float RxAcc = (myICM.accX()) * 1000;
-      float RyAcc = (myICM.accY()) * 1000;
-      float RzAcc = (myICM.accZ()) * 1000;
-      float RateAxz = myICM.gyrX();
-      float RateAyz = myICM.gyrY();
-      float previous_Axz = atan2(previous_RxEst, previous_RzEst);
-      float previous_Ayz = atan2(previous_RyEst, previous_RzEst);
-      float wGyro = 10;
-      float Axz = previous_Axz + (RateAxz * 2.5 * pow(10,-6));
-      float Ayz = previous_Ayz + (RateAyz * 2.5 * pow(10,-6));
-      float RxGyro = sin(Axz) /  sqrt(1 + pow(cos(Axz),2) * pow(tan(Ayz),2));
-      float RyGyro = sin(Ayz) / sqrt(1 + pow(cos(Ayz),2) * pow(tan(Axz),2));
-      if (previous_RzEst < 0){
-        RzGyro = - sqrt(1 - pow(RxGyro,2) - pow(RyGyro,2));
-      }else{
-        RzGyro = sqrt(1 - pow(RxGyro,2) - pow(RyGyro,2));
-      }
-      float RxEst = (RxAcc + RxGyro * wGyro ) / (1 + wGyro);
-      float RyEst = (RyAcc + RyGyro * wGyro ) / (1 + wGyro);
-      float RzEst = (RzAcc + RzGyro * wGyro ) / (1 + wGyro);
-      printScaledAGMT( RxEst, RyEst, RzEst);
-      previous_RxEst = (RxAcc + RxGyro * wGyro ) / (1 + wGyro);
-      previous_RyEst = (RyAcc + RyGyro * wGyro ) / (1 + wGyro);
-      previous_RzEst = (RzAcc + RzGyro * wGyro ) / (1 + wGyro);
-      delay(2000);
-    }
-  }else{
-      Serial.println("Waiting for data");
-      delay(500);
-    }
-}
-
+// Formats float value in any given intger and decimal combination
 void printFormattedFloat(float val, uint8_t leading, uint8_t decimals){
   float aval = abs(val);
   if(val < 0){
@@ -213,14 +162,75 @@ void printFormattedFloat(float val, uint8_t leading, uint8_t decimals){
   }
 }
 
+// Prints Coordiante Data in [X,Y,Z]
 void printScaledAGMT( float RxEst, float RyEst, float RzEst){
+  
   SERIAL_PORT.print("Scaled. X [ ");
-  printFormattedFloat( RxEst, 5, 2 );
+  printFormattedFloat( RxEst, 1, 3 );
   SERIAL_PORT.print(" ], Y [ ");
-  printFormattedFloat( RyEst, 5, 2 );
+  printFormattedFloat( RyEst, 1, 3 );
   SERIAL_PORT.print(" ], Z [ ");
-  printFormattedFloat( RzEst, 5, 2 );
+  printFormattedFloat( RzEst, 1, 3 );
   SERIAL_PORT.print(" ] ");
   SERIAL_PORT.println();
+  
 }
 
+// Function uses mathematical algorithm to combine accelerometer data and gyroscope date to calculatethe IMU's position in space
+void loop() {
+  
+  if( myICM.dataReady() ){
+    myICM.getAGMT();                // The values are only updated when you call 'getAGMT'
+    float previous_RxEst_inital = (myICM.accX()) * 1000; 
+    float previous_RyEst_inital = (myICM.accY()) * 1000;
+    float previous_RzEst_inital = (myICM.accZ()) * 1000;
+    float mag_Rest_inital = sqrt(pow(previous_RxEst_inital,2) + pow(previous_RyEst_inital,2) + pow(previous_RzEst_inital, 2));
+    float previous_RxEst = previous_RxEst_inital / mag_Rest_inital; // RxEst(0)
+    float previous_RyEst = previous_RyEst_inital / mag_Rest_inital; // RyEst(0)
+    float previous_RzEst = previous_RzEst_inital / mag_Rest_inital; // RzEst(0)
+    float RzGyro = 0; // Initializing RzGyro
+   
+    while (1) {
+      myICM.getAGMT();
+      float RxAcc = (myICM.accX()) * 1000; // Acceleration vector in X direction in units of g
+      float RyAcc = (myICM.accY()) * 1000; // Acceleration vector in Y direction in units of g
+      float RzAcc = (myICM.accZ()) * 1000; // Acceleration vector in Z direction in units of g
+      // Following code normalizes Acceleration vectors
+      float mag_Racc = sqrt(pow(RxAcc,2) + pow(RyAcc,2) + pow(RzAcc, 2));
+      float RxAcc_norm = RxAcc/mag_Racc; 
+      float RyAcc_norm = RyAcc/mag_Racc;
+      float RzAcc_norm = RzAcc/mag_Racc;
+      // Gyroscope data for X and Y
+      float RateAxz = myICM.gyrX();
+      float RateAyz = myICM.gyrY();
+      float previous_Axz = atan2(previous_RxEst, previous_RzEst);
+      float previous_Ayz = atan2(previous_RyEst, previous_RzEst);
+      float wGyro = 15;
+      float Axz = previous_Axz + (RateAxz * 2.5 * pow(10,-6));
+      float Ayz = previous_Ayz + (RateAyz * 2.5 * pow(10,-6));
+      float RxGyro = sin(Axz) /  sqrt(1 + pow(cos(Axz),2) * pow(tan(Ayz),2));
+      float RyGyro = sin(Ayz) / sqrt(1 + pow(cos(Ayz),2) * pow(tan(Axz),2));
+      if (previous_RzEst < 0){
+        RzGyro = - sqrt(1 - pow(RxGyro,2) - pow(RyGyro,2));
+      }else{
+        RzGyro = sqrt(1 - pow(RxGyro,2) - pow(RyGyro,2));
+      }
+      float RxEst = (RxAcc_norm + RxGyro * wGyro ) / (1 + wGyro);
+      float RyEst = (RyAcc_norm + RyGyro * wGyro ) / (1 + wGyro);
+      float RzEst = (RzAcc_norm + RzGyro * wGyro ) / (1 + wGyro);
+      float R = sqrt(pow(RxEst,2) + pow(RyEst,2) + pow(RzEst,2));
+      float RxEst_norm = RxEst / R;
+      float RyEst_norm = RyEst / R;
+      float RzEst_norm = RzEst / R;
+      printScaledAGMT(RxEst_norm, RyEst_norm, RzEst_norm);
+      previous_RxEst = ((RxAcc_norm + RxGyro * wGyro ) / (1 + wGyro)) / R;
+      previous_RyEst = ((RyAcc_norm + RyGyro * wGyro ) / (1 + wGyro)) / R;
+      previous_RzEst = ((RzAcc_norm + RzGyro * wGyro ) / (1 + wGyro)) / R;
+      delay(30);
+    }
+    
+  }else{
+      Serial.println("Waiting for data");
+      delay(500);
+    }
+}
