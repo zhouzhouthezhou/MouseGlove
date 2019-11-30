@@ -223,9 +223,9 @@ void loop() {
       float RyEst_norm = RyEst / R;
       float RzEst_norm = RzEst / R;
       printScaledAGMT(RxEst_norm, RyEst_norm, RzEst_norm);
-      previous_RxEst = ((RxAcc_norm + RxGyro * wGyro ) / (1 + wGyro)) / R;
-      previous_RyEst = ((RyAcc_norm + RyGyro * wGyro ) / (1 + wGyro)) / R;
-      previous_RzEst = ((RzAcc_norm + RzGyro * wGyro ) / (1 + wGyro)) / R;
+      previous_RxEst = RxEst_norm;
+      previous_RyEst = RyEst_norm;
+      previous_RzEst = RzEst_norm;
       delay(30);
     }
     
