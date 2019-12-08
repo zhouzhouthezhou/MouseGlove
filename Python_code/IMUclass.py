@@ -37,7 +37,7 @@ class IMU:
 
 	def __init__(self):
 		self.bank = -1
-		self.i2c = I2C(scl=Pin(23), sda=Pin(22), freq=400000)
+		self.i2c = I2C(scl=Pin(22), sda=Pin(21), freq=400000)
 		devices = self.i2c.scan()
 		print("Connected I2C Devices", devices)
 		self.config()
