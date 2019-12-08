@@ -1,4 +1,4 @@
-from machine import I2C
+from machine import I2C, Pin
 
 class IMU:
 	imuAddress = 0x69
