@@ -58,7 +58,7 @@ class IMU:
 		self.writeTo(self.gyroSmpl, gyroRate)
 
 		#set gyro lowpass
-		gconfig1 = int(self.readFrom(self.gyroConfig1, 1)) & 0b10001110
+		gconfig1 = struct.unpack('>H', self.readFrom(self.gyroConfig1, 1)) & 0b10001110
 		gconfig1 |= 0b1
 		gconfig1 |= (5 & 0x07) << 4
 		self.writeTo(self.gyroConfig1, gconfig1)
