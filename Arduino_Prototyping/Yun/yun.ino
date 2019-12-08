@@ -11,6 +11,15 @@ void setup() {
   Mouse.begin();
 }
 
+void loop(){
+  string incoming = "";
+
+  if(BTSerial.available() > 0){
+    incoming = BTSerial.readStringUntil(\n)
+  }
+}
+
+/*
 void loop() {
   char incoming = 0;
   
@@ -39,3 +48,4 @@ void loop() {
     break;
   }
 } 
+*/
