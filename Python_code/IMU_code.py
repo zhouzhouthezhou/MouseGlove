@@ -7,9 +7,8 @@ from machine import Pin, I2C, ADC
 # from tools import MockSMBus
 
 CHIP_ID = 0xEA
-I2C_ADDR = 0x68
-I2C_ADDR_ALT = 0x69
-BANK_SEL = 0x7f
+imuAdd = 0x69
+bankSelect = 0x7f
 
 GYRO_SMPLRT_DIV = 0x00
 GYRO_CONFIG_1 = 0x01
@@ -28,7 +27,9 @@ i2c = I2C(scl=Pin(23), sda=Pin(22), freq=400000)
 
 def config():
 	test = i2c.scan()
-        print(test)
+	print(test)
+	i2c.writeto_mem(imuAdd, bankSelect, b'\x00')
+	print("jfdskla:", i2c.readfrom_mem(imuAdd, bankSelect, 1))
 
 def read_accelerometer_gyro_data():
 	# self.bank(0) = i2c.readfrom(ICM20948_ACCEL_XOUT_H, 8)
