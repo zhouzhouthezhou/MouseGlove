@@ -110,12 +110,18 @@ class IMU:
 		else:
 			print("Bank value not changed")
 
+	def silentSelectBank(self, value):
+		value = value << 4
+		if self.bank != value:
+			self.writeTo(self.bankSelect, value)
+			self.bank = value
+
 	def test(self):
-		self.selectBank(0)
+		self.silentSelectBank(0)
 		data = self.readFrom(self.accelXhigh, 12)
 		ax, ay, az, gx, gy, gz = struct.unpack(">hhhhhh", bytearray(data))
 
-		self.selectBank(2)
+		self.silentSelectBank(2)
 
 		scale = (struct.unpack('>B', self.readFrom(self.accelConfig, 1))[0] & 0x06) >> 1
 
