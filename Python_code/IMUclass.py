@@ -58,8 +58,8 @@ class IMU:
 		self.writeTo(self.gyroSmpl, gyroRate)
 
 		#set gyro lowpass
-		test = self.readFrom(self.gyroConfig1, 1)
-		gconfig1 = int.from_bytes(test, byteorder='big') & 0b10001110
+		test = int.from_bytes(self.readFrom(self.gyroConfig1, 1), byteorder='big')
+		gconfig1 = test & 0b10001110
 		gconfig1 |= 0b1
 		gconfig1 |= (5 & 0x07) << 4
 		self.writeTo(self.gyroConfig1, gconfig1)
