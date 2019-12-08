@@ -44,8 +44,8 @@ class IMU:
 		self.selectBank(0)
 
 		#check if imu is connected
-		if self.readFrom(self.whoAmI, 1) != self.chipID:
-			raise RuntimeError("Unable to find IMU")
+		#if self.readFrom(self.whoAmI, 1) != self.chipID:
+		#	raise RuntimeError("Unable to find IMU")
 
 		#turn imu on
 		self.writeTo(self.pwr1, 0x01)
