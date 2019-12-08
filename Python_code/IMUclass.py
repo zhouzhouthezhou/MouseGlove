@@ -12,12 +12,16 @@ class IMU:
 		print("Connected I2C Devices", devices)
 
 	def selectBank(self, value):
-		if not self.bank == value:
+		print(self.bank, value)
+		if self.bank != value:
 			self.i2c.writeto_mem(self.imuAddress, self.bankSelect, bytearray(value << 4))
 			self.bank = value
 			print("Selected Bank on Device x69:", self.i2c.readfrom_mem(self.imuAddress, self.bankSelect, 1))
+		print("Bank value not changed")
 
 	def test(self):
+		print("selecting bank 0")
 		self.selectBank(0)
+		print("selecting bank 2")
 		self.selectBank(2)
 
