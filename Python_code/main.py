@@ -1,4 +1,4 @@
-import IMUclass.py
+import IMUclass
 
 def run():
 	imu = IMUclass.IMU()
