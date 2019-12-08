@@ -93,6 +93,8 @@ class IMU:
 		self.writeTo(self.i2cMstCtrl, 0x4D)
 		self.writeTo(self.i2cMstDelay, 0x01)
 
+		self.selectBank(0)
+
 		
 
 	def writeTo(self, address, buff):

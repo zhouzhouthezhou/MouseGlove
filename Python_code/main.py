@@ -3,7 +3,6 @@ import IMUclass
 def run():
 	print("RUN: main.py")
 	imu = IMUclass.IMU()
-	imu.config()
 	while(True):
 		imu.test()
 
