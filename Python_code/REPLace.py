@@ -44,7 +44,7 @@ excludes = ['REPLace.py',
 includes = []
 includes.append('boot.py')
 includes.append('main.py')
-includes.append('IMU_code.py')
+includes.append('IMUclass.py')
 
 # The following variable reduces upload size.
 # If True, this removes blank lines, comments, and right-side whitespace.
