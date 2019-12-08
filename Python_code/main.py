@@ -1,4 +1,5 @@
 import IMUclass
+import softwareUart
 
 def run():
 	print("RUN: main.py")
