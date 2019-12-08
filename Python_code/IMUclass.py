@@ -144,14 +144,6 @@ class IMU:
 		return (ax, ay, az, gx, gy, gz)
 
 	def orientation(self):
-	    # smbus = mock.Mock()
-	    # smbus.SMBus = MockSMBus
-	    # sys.modules['smbus'] = smbus
-
-	   # from icm20948 import ICM20948
-	   # icm20948 = ICM20948()
-	   # ax, ay, az, gx, gy, gz = icm20948.read_accelerometer_gyro_data()
-
 	    previous_RxEst_initial = 0
 	    previous_RyEst_initial = 0
 	    previous_RzEst_initial = 1
@@ -167,9 +159,6 @@ class IMU:
 	    RyEst_norm = 0
 	    RzEst_norm = 0
 	    while True:
-	        #from icm20948 import ICM20948
-	        #icm20948 = ICM20948()
-	        #ax, ay, az, gx, gy, gz = icm20948.read_accelerometer_gyro_data()
 	        ax, ay, az, gx, gy, gz = self.readAccelerometerGyroData()
 	        mag_Racc = math.sqrt(math.pow(ax,2) + math.pow(ay,2) + math.pow(az,2))
 	        ax_norm = ax / mag_Racc
