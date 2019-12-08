@@ -64,7 +64,7 @@ class IMU:
 		self.writeTo(self.gyroConfig1, gconfig1)
 
 		#set gyro full scale
-		gfullscale = int(self.readFrom(self.gyroConfig1, 1)) & 0b11111001
+		gfullscale = struct.unpack('>B', self.readFrom(self.gyroConfig1, 1))[0] & 0b11111001
 		gfullscale |= {250: 0b00, 500: 0b01, 1000: 0b10, 2000: 0b11}[250] << 1
 		self.writeTo(self.gyroConfig1, gfullscale)
 
@@ -75,13 +75,13 @@ class IMU:
 
 
 		#set accelerometer lowpass
-		aconfig = int(self.readFrom(self.accelConfig, 1)) & 0b10001110
+		aconfig = struct.unpack('>B', self.readFrom(self.accelConfig, 1))[0] & 0b10001110
 		aconfig |= 0b1
 		aconfig |= (5 & 0x07) << 4
 		self.writeTo(self.accelConfig, aconfig)
 
 		#set accelerometer 
-		afullscale = int(self.readFrom(self.accelConfig, 1)) & 0b11111001
+		afullscale = struct.unpack('>B', self.readFrom(self.accelConfig, 1))[0] & 0b11111001
 		afullscale |= {2: 0b00, 4: 0b01, 8: 0b10, 16: 0b11}[16] << 1
 		self.writeTo(self.accelConfig, afullscale)
 
