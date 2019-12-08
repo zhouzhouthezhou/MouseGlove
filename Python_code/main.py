@@ -4,7 +4,7 @@ def run():
 	print("RUN: main.py")
 	imu = IMUclass.IMU()
 	while(True):
-		imu.test()
+		imu.orientation()
 
 if __name__ == '__main__':
 	run()
