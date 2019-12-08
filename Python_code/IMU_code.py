@@ -27,16 +27,17 @@ print('hello world')
 i2c = I2C(scl=Pin(23), sda=Pin(22), freq=400000)
 
 def config():
-	i2c.scan()
+	test = i2c.scan()
+        print(test)
 
 def read_accelerometer_gyro_data():
 	# self.bank(0) = i2c.readfrom(ICM20948_ACCEL_XOUT_H, 8)
-	ax = i2c.readfrom(ICM20948_ACCEL_XOUT_H, 2)
-	ay = i2c.readfrom(ICM20948_ACCEL_YOUT_H, 2)
-	az = i2c.readfrom(ICM20948_ACCEL_ZOUT_H, 2)
-	gx = i2c.readfrom(ICM20948_GYRO_XOUT_H, 2)
-	gy = i2c.readfrom(ICM20948_GYRO_YOUT_H, 2)
-	gz = i2c.readfrom(ICM20948_GYRO_ZOUT_H, 2)
+	ax = i2c.readfrom(ACCEL_XOUT_H, 2)
+	ay = i2c.readfrom(ACCEL_YOUT_H, 2)
+	az = i2c.readfrom(ACCEL_ZOUT_H, 2)
+	gx = i2c.readfrom(GYRO_XOUT_H, 2)
+	gy = i2c.readfrom(GYRO_YOUT_H, 2)
+	gz = i2c.readfrom(GYRO_ZOUT_H, 2)
 	data = [ax,ay,az,gx,gy,gz]
 
 	ax, ay, az, gx, gy, gz = struct.unpack(">hhhhhh", bytearray(data))
@@ -133,11 +134,3 @@ def orientation():
 
     # assert (round(ax, 2), round(ay, 2), round(az, 2), int(gx), int(gy), int(gz)) == (0.05, 0.11, 0.16, 3, 4, 5)
     # del icm20948
-
-def main():
-	config()
-    #orientation()
-
-
-if __name__ == "__main__":
-    main()
