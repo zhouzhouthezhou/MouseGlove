@@ -16,7 +16,7 @@ class IMU:
 		devices = self.i2c.scan()
 		print("Connected I2C Devices", devices)
 
-	def readFrom(address, byteNum):
+	def readFrom(self, address, byteNum):
 		return self.i2c.readfrom_mem(self.imuAddress, address, byteNum)
 
 	def selectBank(self, value):
