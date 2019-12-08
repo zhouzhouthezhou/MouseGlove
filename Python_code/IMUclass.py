@@ -35,8 +35,8 @@ class IMU:
 
 	def test(self):
 		data = self.readFrom(self.accelXhigh, 12)
+		print(data)
 		ax, ay, az, gx, gy, gz = struct.unpack(">hhhhhh", bytearray(data))
-		print(ax, ay, az, gx, gy, gz)
 		#print("selecting bank 2")
 		#self.selectBank(2)
 
