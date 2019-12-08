@@ -1,9 +1,9 @@
-import IMU_code
+import IMUclass.py
 
 def run():
 	print("RUN: main.py")
-	IMU_code.config()
-	IMU_code.test()
+	imu = IMU()
+	imu.test()
 
 if __name__ == '__main__':
 	run()
