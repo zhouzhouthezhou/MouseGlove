@@ -16,6 +16,7 @@
   ICM_20948_I2C myICM;  // Otherwise create an ICM_20948_I2C object
 #endif
 
+
 void setup() {
 
   SERIAL_PORT.begin(115200);
@@ -37,10 +38,10 @@ void setup() {
     myICM.begin( WIRE_PORT, AD0_VAL );
 #endif
 
-    SERIAL_PORT.print( F("Initialization of the sensor returned: ") );
-    SERIAL_PORT.println( myICM.statusString() );
+    //SERIAL_PORT.print( F("Initialization of the sensor returned: ") );
+    //SERIAL_PORT.println( myICM.statusString() );
     if( myICM.status != ICM_20948_Stat_Ok ){
-      SERIAL_PORT.println( "Trying again..." );
+      //SERIAL_PORT.println( "Trying again..." );
       delay(500);
     }else{
       initialized = true;
@@ -48,13 +49,13 @@ void setup() {
   }
 
   // In this advanced example we'll cover how to do a more fine-grained setup of your sensor
-  SERIAL_PORT.println("Device connected!");
+  //SERIAL_PORT.println("Device connected!");
 
   // Here we are doing a SW reset to make sure the device starts in a known state
   myICM.swReset( );
   if( myICM.status != ICM_20948_Stat_Ok){
-    SERIAL_PORT.print(F("Software Reset returned: "));
-    SERIAL_PORT.println(myICM.statusString());
+    //SERIAL_PORT.print(F("Software Reset returned: "));
+    //SERIAL_PORT.println(myICM.statusString());
   }
   delay(250);
   
@@ -69,8 +70,8 @@ void setup() {
   //          ICM_20948_Sample_Mode_Cycled
   myICM.setSampleMode( (ICM_20948_Internal_Acc | ICM_20948_Internal_Gyr), ICM_20948_Sample_Mode_Continuous ); 
   if( myICM.status != ICM_20948_Stat_Ok){
-    SERIAL_PORT.print(F("setSampleMode returned: "));
-    SERIAL_PORT.println(myICM.statusString());
+    //SERIAL_PORT.print(F("setSampleMode returned: "));
+    //SERIAL_PORT.println(myICM.statusString());
   }
 
   // Set full scale ranges for both acc and gyr
@@ -90,8 +91,8 @@ void setup() {
                           
   myICM.setFullScale( (ICM_20948_Internal_Acc | ICM_20948_Internal_Gyr), myFSS );  
   if( myICM.status != ICM_20948_Stat_Ok){
-    SERIAL_PORT.print(F("setFullScale returned: "));
-    SERIAL_PORT.println(myICM.statusString());
+    //SERIAL_PORT.print(F("setFullScale returned: "));
+    //SERIAL_PORT.println(myICM.statusString());
   }
 
 
@@ -118,19 +119,19 @@ void setup() {
                                           
   myICM.setDLPFcfg( (ICM_20948_Internal_Acc | ICM_20948_Internal_Gyr), myDLPcfg );
   if( myICM.status != ICM_20948_Stat_Ok){
-    SERIAL_PORT.print(F("setDLPcfg returned: "));
-    SERIAL_PORT.println(myICM.statusString());
+    //SERIAL_PORT.print(F("setDLPcfg returned: "));
+    //SERIAL_PORT.println(myICM.statusString());
   }
 
   // Choose whether or not to use DLPF
   // Here we're also showing another way to access the status values, and that it is OK to supply individual sensor masks to these functions
   ICM_20948_Status_e accDLPEnableStat = myICM.enableDLPF( ICM_20948_Internal_Acc, false );
   ICM_20948_Status_e gyrDLPEnableStat = myICM.enableDLPF( ICM_20948_Internal_Gyr, false );
-  SERIAL_PORT.print(F("Enable DLPF for Accelerometer returned: ")); SERIAL_PORT.println(myICM.statusString(accDLPEnableStat));
-  SERIAL_PORT.print(F("Enable DLPF for Gyroscope returned: ")); SERIAL_PORT.println(myICM.statusString(gyrDLPEnableStat));
+  //SERIAL_PORT.print(F("Enable DLPF for Accelerometer returned: ")); SERIAL_PORT.println(myICM.statusString(accDLPEnableStat));
+  //SERIAL_PORT.print(F("Enable DLPF for Gyroscope returned: ")); SERIAL_PORT.println(myICM.statusString(gyrDLPEnableStat));
 
-  SERIAL_PORT.println();
-  SERIAL_PORT.println(F("Configuration complete!")); 
+  //SERIAL_PORT.println();
+  //SERIAL_PORT.println(F("Configuration complete!")); 
 }
 
 // Formats float value in any given intger and decimal combination
@@ -165,13 +166,11 @@ void printFormattedFloat(float val, uint8_t leading, uint8_t decimals){
 // Prints Coordiante Data in [X,Y,Z]
 void printScaledAGMT( float RxEst, float RyEst, float RzEst){
   
-  SERIAL_PORT.print("Scaled. X [ ");
   printFormattedFloat( RxEst, 1, 3 );
-  SERIAL_PORT.print(" ], Y [ ");
+  SERIAL_PORT.print(",");
   printFormattedFloat( RyEst, 1, 3 );
-  SERIAL_PORT.print(" ], Z [ ");
+  SERIAL_PORT.print(",");
   printFormattedFloat( RzEst, 1, 3 );
-  SERIAL_PORT.print(" ] ");
   SERIAL_PORT.println();
   
 }
@@ -180,36 +179,47 @@ void printScaledAGMT( float RxEst, float RyEst, float RzEst){
 void loop() {
   
   if( myICM.dataReady() ){
-    myICM.getAGMT();                // The values are only updated when you call 'getAGMT'
-    float previous_RxEst_inital = (myICM.accX()) * 1000; 
-    float previous_RyEst_inital = (myICM.accY()) * 1000;
-    float previous_RzEst_inital = (myICM.accZ()) * 1000;
+    float previous_RxEst_inital = 0; 
+    float previous_RyEst_inital = 0;
+    float previous_RzEst_inital = 1;
     float mag_Rest_inital = sqrt(pow(previous_RxEst_inital,2) + pow(previous_RyEst_inital,2) + pow(previous_RzEst_inital, 2));
-    float previous_RxEst = previous_RxEst_inital / mag_Rest_inital; // RxEst(0)
-    float previous_RyEst = previous_RyEst_inital / mag_Rest_inital; // RyEst(0)
-    float previous_RzEst = previous_RzEst_inital / mag_Rest_inital; // RzEst(0)
-    float RzGyro = 0; // Initializing RzGyro
+    float previous_RxEst = (previous_RxEst_inital / mag_Rest_inital); // RxEst(0)
+    float previous_RyEst = (previous_RyEst_inital / mag_Rest_inital); // RyEst(0)
+    float previous_RzEst = (previous_RzEst_inital / mag_Rest_inital); // RzEst(0)
+    float previous_RateAxz =  0; // RateAxz(0)
+    float previous_RateAyz = 0; // RateAyz(0)
+    float previous_Axz = atan2(previous_RxEst, previous_RzEst);
+    float previous_Ayz = atan2(previous_RyEst, previous_RzEst);
+    float RxEst_norm = 0;
+    float RyEst_norm = 0;
+    float RzEst_norm = 0;
+
+    float RzGyro; // Initializing RzGyro
    
     while (1) {
-      myICM.getAGMT();
-      float RxAcc = (myICM.accX()) * 1000; // Acceleration vector in X direction in units of g
-      float RyAcc = (myICM.accY()) * 1000; // Acceleration vector in Y direction in units of g
-      float RzAcc = (myICM.accZ()) * 1000; // Acceleration vector in Z direction in units of g
+      myICM.getAGMT();                // The values are only updated when you call 'getAGMT' 
+      float RxAcc = (myICM.accX()) / 1000; // Acceleration vector in X direction in units of g
+      float RyAcc = (myICM.accY()) / 1000; // Acceleration vector in Y direction in units of g
+      float RzAcc = (myICM.accZ()) / 1000; // Acceleration vector in Z direction in units of g
       // Following code normalizes Acceleration vectors
       float mag_Racc = sqrt(pow(RxAcc,2) + pow(RyAcc,2) + pow(RzAcc, 2));
       float RxAcc_norm = RxAcc/mag_Racc; 
       float RyAcc_norm = RyAcc/mag_Racc;
       float RzAcc_norm = RzAcc/mag_Racc;
       // Gyroscope data for X and Y
-      float RateAxz = myICM.gyrX();
-      float RateAyz = myICM.gyrY();
-      float previous_Axz = atan2(previous_RxEst, previous_RzEst);
-      float previous_Ayz = atan2(previous_RyEst, previous_RzEst);
+      float RateAxz = myICM.gyrY();
+      float RateAyz = - myICM.gyrX();
+      float RateAxz_avg = (RateAxz + previous_RateAxz)/2; // Average gives more accurate data
+      float RateAyz_avg = (RateAyz + previous_RateAyz)/2; // Average gives more accurate data
+      previous_RateAxz = RateAxz;
+      previous_RateAyz = RateAyz;
       float wGyro = 15;
-      float Axz = previous_Axz + (RateAxz * 2.5 * pow(10,-6));
-      float Ayz = previous_Ayz + (RateAyz * 2.5 * pow(10,-6));
-      float RxGyro = sin(Axz) /  sqrt(1 + pow(cos(Axz),2) * pow(tan(Ayz),2));
-      float RyGyro = sin(Ayz) / sqrt(1 + pow(cos(Ayz),2) * pow(tan(Axz),2));
+      float Axz = previous_Axz + (RateAxz_avg * 2.5 * pow(10,-6));
+      float Ayz = previous_Ayz + (RateAyz_avg * 2.5 * pow(10,-6));
+      previous_Axz = Axz;
+      previous_Ayz = Ayz;
+      float RxGyro = 1 / sqrt(1 + pow((1/tan(Axz)),2) * pow((1/cos(Ayz)),2));
+      float RyGyro = 1 / sqrt(1 + pow((1/tan(Ayz)),2) * pow((1/cos(Axz)),2));
       if (previous_RzEst < 0){
         RzGyro = - sqrt(1 - pow(RxGyro,2) - pow(RyGyro,2));
       }else{
@@ -219,10 +229,10 @@ void loop() {
       float RyEst = (RyAcc_norm + RyGyro * wGyro ) / (1 + wGyro);
       float RzEst = (RzAcc_norm + RzGyro * wGyro ) / (1 + wGyro);
       float R = sqrt(pow(RxEst,2) + pow(RyEst,2) + pow(RzEst,2));
-      float RxEst_norm = RxEst / R;
-      float RyEst_norm = RyEst / R;
-      float RzEst_norm = RzEst / R;
-      printScaledAGMT(RxEst_norm, RyEst_norm, RzEst_norm);
+      float RxEst_norm = (RxEst / R);
+      float RyEst_norm = (RyEst / R);
+      float RzEst_norm = (RzEst / R);
+      printScaledAGMT(20* RxEst_norm, 20 * RyEst_norm, 20 * RzEst_norm);
       previous_RxEst = RxEst_norm;
       previous_RyEst = RyEst_norm;
       previous_RzEst = RzEst_norm;
