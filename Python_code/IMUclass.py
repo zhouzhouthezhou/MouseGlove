@@ -17,7 +17,7 @@ class IMU:
 			self.bank = value
 			print("Selected Bank on Device x69:", i2c.readfrom_mem(imuAdd, bankSelect, 1))
 
-	def test():
+	def test(self):
 		selectBank(0)
 		selectBank(2)
 
