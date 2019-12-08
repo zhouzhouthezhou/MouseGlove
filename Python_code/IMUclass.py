@@ -23,18 +23,20 @@ class IMU:
 		value = value << 4
 		print(self.bank, value, bytes([value]))
 		if self.bank != value:
+			print("selecting bank ", value >> 4)
 			self.i2c.writeto_mem(self.imuAddress, self.bankSelect, bytes([value]))
 			self.bank = value
 			print("Selected Bank on Device x69:", self.readFrom(self.bankSelect, 1))
 		else:
 			print("Bank value not changed")
 
-	def test(self):
-		print("selecting bank 0")
+	def config(self):
 		self.selectBank(0)
+
+	def test(self):
 		data = self.readFrom(self.accelXhigh, 12)
 		ax, ay, az, gx, gy, gz = struct.unpack(">hhhhhh", bytearray(data))
 		print(ax, ay, az, gx, gy, gz)
-		print("selecting bank 2")
-		self.selectBank(2)
+		#print("selecting bank 2")
+		#self.selectBank(2)
 
