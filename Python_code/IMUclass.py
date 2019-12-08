@@ -77,7 +77,7 @@ class IMU:
 		#set accelerometer lowpass
 		aconfig = int(self.readFrom(self.accelConfig, 1)) & 0b10001110
 		aconfig |= 0b1
-		aconfig |= 5 & 0x07) << 4
+		aconfig |= (5 & 0x07) << 4
 		self.writeTo(self.accelConfig, aconfig)
 
 		#set accelerometer 
