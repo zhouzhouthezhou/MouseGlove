@@ -9,60 +9,63 @@ from machine import Pin, I2C, ADC
 CHIP_ID = 0xEA
 I2C_ADDR = 0x68
 I2C_ADDR_ALT = 0x69
-ICM20948_BANK_SEL = 0x7f
+BANK_SEL = 0x7f
 
-ICM20948_GYRO_SMPLRT_DIV = 0x00
-ICM20948_GYRO_CONFIG_1 = 0x01
-ICM20948_GYRO_CONFIG_2 = 0x02
+GYRO_SMPLRT_DIV = 0x00
+GYRO_CONFIG_1 = 0x01
+GYRO_CONFIG_2 = 0x02
 
-ICM20948_ACCEL_CONFIG = 0x14
-ICM20948_ACCEL_XOUT_H = 0x2D
-ICM20948_ACCEL_YOUT_H = 0x2F
-ICM20948_ACCEL_ZOUT_H = 0x31
-ICM20948_GYRO_XOUT_H = 0x33
-ICM20948_GYRO_YOUT_H = 0x35
-ICM20948_GYRO_ZOUT_H = 0x37
+ACCEL_CONFIG = 0x14
+ACCEL_XOUT_H = 0x2D
+ACCEL_YOUT_H = 0x2F
+ACCEL_ZOUT_H = 0x31
+GYRO_XOUT_H = 0x33
+GYRO_YOUT_H = 0x35
+GYRO_ZOUT_H = 0x37
 
-i2c = I2C(0)
-i2c = I2C(1, scl=Pin(23), sda=Pin(22), freq=400000)
+print('hello world')
+i2c = I2C(scl=Pin(23), sda=Pin(22), freq=400000)
+
+def config():
+	i2c.scan()
 
 def read_accelerometer_gyro_data():
-    # self.bank(0) = i2c.readfrom(ICM20948_ACCEL_XOUT_H, 8)
-    ax = i2c.readfrom(ICM20948_ACCEL_XOUT_H, 2)
-    ay = i2c.readfrom(ICM20948_ACCEL_YOUT_H, 2)
-    az = i2c.readfrom(ICM20948_ACCEL_ZOUT_H, 2)
-    gx = i2c.readfrom(ICM20948_GYRO_XOUT_H, 2)
-    gy = i2c.readfrom(ICM20948_GYRO_YOUT_H, 2)
-    gz = i2c.readfrom(ICM20948_GYRO_ZOUT_H, 2)
-    data = [ax,ay,az,gx,gy,gz]
+	# self.bank(0) = i2c.readfrom(ICM20948_ACCEL_XOUT_H, 8)
+	ax = i2c.readfrom(ICM20948_ACCEL_XOUT_H, 2)
+	ay = i2c.readfrom(ICM20948_ACCEL_YOUT_H, 2)
+	az = i2c.readfrom(ICM20948_ACCEL_ZOUT_H, 2)
+	gx = i2c.readfrom(ICM20948_GYRO_XOUT_H, 2)
+	gy = i2c.readfrom(ICM20948_GYRO_YOUT_H, 2)
+	gz = i2c.readfrom(ICM20948_GYRO_ZOUT_H, 2)
+	data = [ax,ay,az,gx,gy,gz]
 
-    ax, ay, az, gx, gy, gz = struct.unpack(">hhhhhh", bytearray(data))
+	ax, ay, az, gx, gy, gz = struct.unpack(">hhhhhh", bytearray(data))
 
-    # self.bank(2)
+	# self.bank(2)
 
-    # Read accelerometer full scale range and
-    # use it to compensate the self.reading to gs
-    scale = (i2c.readfrom(ICM20948_ACCEL_CONFIG,8) & 0x06) >> 1
+	# Read accelerometer full scale range and
+	# use it to compensate the self.reading to gs
+	scale = (i2c.readfrom(ICM20948_ACCEL_CONFIG,8) & 0x06) >> 1
 
-    # scale ranges from section 3.2 of the datasheet
-    gs = [16384.0, 8192.0, 4096.0, 2048.0][scale]
+	# scale ranges from section 3.2 of the datasheet
+	gs = [16384.0, 8192.0, 4096.0, 2048.0][scale]
 
-    ax /= gs
-    ay /= gs
-    az /= gs
+	ax /= gs
+	ay /= gs
+	az /= gs
 
-    # Read back the degrees per second rate and
-    # use it to compensate the self.reading to dps
-    scale = (i2c.readfrom(ICM20948_GYRO_CONFIG_1,8) & 0x06) >> 1
+	# Read back the degrees per second rate and
+	# use it to compensate the self.reading to dps
+	scale = (i2c.readfrom(ICM20948_GYRO_CONFIG_1,8) & 0x06) >> 1
 
-    # scale ranges from section 3.1 of the datasheet
-    dps = [131, 65.5, 32.8, 16.4][scale]
+	# scale ranges from section 3.1 of the datasheet
+	dps = [131, 65.5, 32.8, 16.4][scale]
 
-    gx /= dps
-    gy /= dps
-    gz /= dps
+	gx /= dps
+	gy /= dps
+	gz /= dps
 
-    return ax, ay, az, gx, gy, gz
+	return ax, ay, az, gx, gy, gz
 
 def orientation():
     # smbus = mock.Mock()
@@ -132,7 +135,8 @@ def orientation():
     # del icm20948
 
 def main():
-    orientation()
+	config()
+    #orientation()
 
 
 if __name__ == "__main__":
