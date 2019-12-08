@@ -92,9 +92,6 @@ class IMU:
 		self.selectBank(3)
 		self.writeTo(self.i2cMstCtrl, 0x4D)
 		self.writeTo(self.i2cMstDelay, 0x01)
-
-		self.selectBank(0)
-
 		
 
 	def writeTo(self, address, buff):
@@ -114,9 +111,27 @@ class IMU:
 			print("Bank value not changed")
 
 	def test(self):
+		self.selectBank(0)
 		data = self.readFrom(self.accelXhigh, 12)
-		print(data)
 		ax, ay, az, gx, gy, gz = struct.unpack(">hhhhhh", bytearray(data))
-		#print("selecting bank 2")
-		#self.selectBank(2)
+
+		self.selectBank(2)
+
+		scale = (struct.unpack('>B', self.readFrom(self.accelConfig, 1))[0] & 0x06) >> 1
+
+		gs = [16384.0, 8192.0, 4096.0, 2048.0][scale]
+
+		ax /= gs
+		ay /= gs
+		az /= gs
+
+		scale = (struct.unpack('>B', self.readFrom(self.gyroConfig1, 1))[0] & 0x06) >> 1
+
+		dps = [131.0, 65.5, 32.8, 16.4][scale]
+
+		gx /= dps
+		gy /= dps
+		gz /= dps
+
+		print(ax, ay, az, gx, gy, gz)
 
