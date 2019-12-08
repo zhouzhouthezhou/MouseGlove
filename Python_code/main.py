@@ -1,8 +1,9 @@
 import IMUclass
 
 def run():
-	imu = IMUclass.IMU()
 	print("RUN: main.py")
+	imu = IMUclass.IMU()
+	imu.test()
 
 if __name__ == '__main__':
 	run()
