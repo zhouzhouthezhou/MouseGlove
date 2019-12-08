@@ -58,30 +58,30 @@ class IMU:
 		self.writeTo(self.gyroSmpl, gyroRate)
 
 		#set gyro lowpass
-		gconfig1 = self.readFrom(self.gyroConfig1, 1) & bytes([0b10001110])
+		gconfig1 = int(self.readFrom(self.gyroConfig1, 1)) & 0b10001110
 		gconfig1 |= 0b1
 		gconfig1 |= (5 & 0x07) << 4
 		self.writeTo(self.gyroConfig1, gconfig1)
 
 		#set gyro full scale
-		gfullscale = self.readFrom(self.gyroConfig1, 1) & bytes([0b11111001])
+		gfullscale = int(self.readFrom(self.gyroConfig1, 1)) & 0b11111001
 		gfullscale |= {250: 0b00, 500: 0b01, 1000: 0b10, 2000: 0b11}[250] << 1
 		self.writeTo(self.gyroConfig1, gfullscale)
 
 		#set accelerometer sample rate
 		aRate = int((1125.0 / 1125) - 1)
-		self.writeTo(self.accelSmpl1, (aRate >> 8) & bytes([0xff]))
-		self.writeTo(self.accelSmpl2, aRate & bytes([0xff]))
+		self.writeTo(self.accelSmpl1, (aRate >> 8) & 0xff)
+		self.writeTo(self.accelSmpl2, aRate & 0xff)
 
 
 		#set accelerometer lowpass
-		aconfig = self.readFrom(self.accelConfig, 1) & bytes([0b10001110])
+		aconfig = int(self.readFrom(self.accelConfig, 1)) & 0b10001110
 		aconfig |= 0b1
-		aconfig |= (5 & 0x07) << 4
+		aconfig |= 5 & 0x07) << 4
 		self.writeTo(self.accelConfig, aconfig)
 
 		#set accelerometer 
-		afullscale = self.readFrom(self.accelConfig, 1) & 0b11111001
+		afullscale = int(self.readFrom(self.accelConfig, 1)) & 0b11111001
 		afullscale |= {2: 0b00, 4: 0b01, 8: 0b10, 16: 0b11}[16] << 1
 		self.writeTo(self.accelConfig, afullscale)
 
