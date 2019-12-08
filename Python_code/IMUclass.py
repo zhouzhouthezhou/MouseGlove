@@ -13,7 +13,7 @@ class IMU:
 
 	def selectBank(self, value):
 		value = value << 4
-		print(self.bank, value, bytes([value]))
+		print(self.bank, value, bytearray(bytes([value])))
 		if self.bank != value:
 			self.i2c.writeto_mem(self.imuAddress, self.bankSelect, bytearray(value << 4))
 			self.bank = value
