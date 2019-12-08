@@ -13,9 +13,9 @@ class IMU:
 
 	def selectBank(self, value):
 		if not self.bank == value:
-			self.i2c.writeto_mem(imuAddress, bankSelect, value << 4)
+			self.i2c.writeto_mem(self.imuAddress, self.bankSelect, value << 4)
 			self.bank = value
-			print("Selected Bank on Device x69:", i2c.readfrom_mem(imuAdd, bankSelect, 1))
+			print("Selected Bank on Device x69:", i2c.readfrom_mem(self.imuAddress, self.bankSelect, 1))
 
 	def test(self):
 		self.selectBank(0)
