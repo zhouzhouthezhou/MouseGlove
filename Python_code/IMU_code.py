@@ -9,6 +9,7 @@ from machine import Pin, I2C, ADC
 CHIP_ID = 0xEA
 imuAdd = 0x69
 bankSelect = 0x7f
+bank = 0
 
 GYRO_SMPLRT_DIV = 0x00
 GYRO_CONFIG_1 = 0x01
@@ -27,26 +28,34 @@ i2c = I2C(scl=Pin(23), sda=Pin(22), freq=400000)
 
 def config():
 	test = i2c.scan()
-	print(test)
-	i2c.writeto_mem(imuAdd, bankSelect, b'\x00')
-	print("jfdskla:", i2c.readfrom_mem(imuAdd, bankSelect, 1))
+	print("Connected I2C Devices:",test)
 
-def read_accelerometer_gyro_data():
-	# self.bank(0) = i2c.readfrom(ICM20948_ACCEL_XOUT_H, 8)
-	ax = i2c.readfrom(ACCEL_XOUT_H, 2)
-	ay = i2c.readfrom(ACCEL_YOUT_H, 2)
-	az = i2c.readfrom(ACCEL_ZOUT_H, 2)
-	gx = i2c.readfrom(GYRO_XOUT_H, 2)
-	gy = i2c.readfrom(GYRO_YOUT_H, 2)
-	gz = i2c.readfrom(GYRO_ZOUT_H, 2)
-	data = [ax,ay,az,gx,gy,gz]
+def selectBank(value):
+	if not bank == value:
+		i2c.writeto_mem(imuAdd, bankSelect, value << 4)
+		bank = value
+		print("Selected Bank on Device x69:", i2c.readfrom_mem(imuAdd, bankSelect, 1))
+	print("Bank not changed")
+
+def test():
+	selectBank(0)
+	i2c.readfrom_mem(imuAdd, ACCEL_XOUT_H)
 
 	ax, ay, az, gx, gy, gz = struct.unpack(">hhhhhh", bytearray(data))
 
-	# self.bank(2)
+	selectBank(2)
+
+def read_accelerometer_gyro_data():
+	selectBank(0)
+	i2c.readfrom_mem(imuAdd, ACCEL_XOUT_H)
+
+	ax, ay, az, gx, gy, gz = struct.unpack(">hhhhhh", bytearray(data))
+
+	selectBank(2)
 
 	# Read accelerometer full scale range and
 	# use it to compensate the self.reading to gs
+	
 	scale = (i2c.readfrom(ICM20948_ACCEL_CONFIG,8) & 0x06) >> 1
 
 	# scale ranges from section 3.2 of the datasheet

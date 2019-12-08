@@ -1,3 +1,9 @@
-print('RUN: main.py')
 import IMU_code
-IMU_code.config()
+
+def run():
+	print("RUN: main.py")
+	IMU_code.config()
+	IMU_code.test()
+
+if __name__ == '__main__':
+	run()
