@@ -1,6 +1,7 @@
 import struct
 import time
 import math
+import softwareUart
 
 from machine import I2C, Pin
 
@@ -119,6 +120,8 @@ class IMU:
 			self.bank = value
 
 	def readAccelerometerGyroData(self):
+
+
 		self.silentSelectBank(0)
 		data = self.readFrom(self.accelXhigh, 12)
 		ax, ay, az, gx, gy, gz = struct.unpack(">hhhhhh", bytearray(data))
@@ -144,6 +147,8 @@ class IMU:
 		return (ax, ay, az, gx, gy, gz)
 
 	def orientation(self):
+		#comms = softwareUart.UartCom();
+
 	    previous_RxEst_initial = 0
 	    previous_RyEst_initial = 0
 	    previous_RzEst_initial = 1
@@ -188,9 +193,10 @@ class IMU:
 	        RxEst_norm = RxEst / R
 	        RyEst_norm = RyEst / R
 	        RzEst_norm = RzEst / R
-	        print("X: " + str(RxEst_norm))
-	        print("Y: " + str(RyEst_norm))
-	        print("Z: " + str(RzEst_norm))
+
+            stringbuilder = str(RxEst_norm) + "," + str(RyEst_norm) + "," + str(RzEst_norm)
+            print(stringbuilder)
+
 	        time.sleep_ms(30)
 	        previous_RxEst = RxEst_norm
 	        previous_RyEst = RyEst_norm
