@@ -146,6 +146,14 @@ class IMU:
 
 		return (ax, ay, az, gx, gy, gz)
 
+	def read_click(self):
+		index = Pin(16,Pin.OUT)
+		middle = Pin(17,Pin.OUT)
+		string_builder = "," + str(index.value()) + "," + str(middle.value())
+		return string_builder
+
+
+
 	def orientation(self):
 		#comms = softwareUart.UartCom();
 
@@ -194,8 +202,9 @@ class IMU:
 			RyEst_norm = RyEst / R
 			RzEst_norm = RzEst / R
 
-			stringbuilder = str(RxEst_norm) + "," + str(RyEst_norm) + "," + str(RzEst_norm) + "\n"
-			#print(stringbuilder)
+			index_middle_read = self.read_click()
+			stringbuilder = str(RxEst_norm) + "," + str(RyEst_norm) + "," + str(RzEst_norm) + index_middle_read + "\n"
+			print(stringbuilder)
 			self.uart.send_Message(stringbuilder)
 
 			time.sleep_ms(30)
