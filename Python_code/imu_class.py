@@ -199,4 +199,4 @@ class IMU:
 			time.sleep_ms(30)
 			previous_RxEst = RxEst_norm
 			previous_RyEst = RyEst_norm
-			previous_RzEst = RzEst_norm 
+			previous_RzEst = RzEst_norm
