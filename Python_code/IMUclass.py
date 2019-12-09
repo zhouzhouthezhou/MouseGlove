@@ -149,55 +149,55 @@ class IMU:
 	def orientation(self):
 		#comms = softwareUart.UartCom();
 
-	    previous_RxEst_initial = 0
-	    previous_RyEst_initial = 0
-	    previous_RzEst_initial = 1
-	    mag_Rest_initial = math.sqrt(math.pow(previous_RxEst_initial,2) + math.pow(previous_RyEst_initial,2) + math.pow(previous_RzEst_initial,2))
-	    previous_RxEst = (previous_RxEst_initial / mag_Rest_initial)
-	    previous_RyEst = (previous_RyEst_initial / mag_Rest_initial)
-	    previous_RzEst = (previous_RzEst_initial / mag_Rest_initial)
-	    previous_RateAxz = 0
-	    previous_RateAyz = 0
-	    previous_Axz = math.atan2(previous_RxEst , previous_RzEst)
-	    previous_Ayz = math.atan2(previous_RyEst , previous_RzEst)
-	    RxEst_norm = 0
-	    RyEst_norm = 0
-	    RzEst_norm = 0
-	    while True:
-	        ax, ay, az, gx, gy, gz = self.readAccelerometerGyroData()
-	        mag_Racc = math.sqrt(math.pow(ax,2) + math.pow(ay,2) + math.pow(az,2))
-	        ax_norm = ax / mag_Racc
-	        ay_norm = ay / mag_Racc
-	        az_norm = az / mag_Racc
-	        RateAxz = gy
-	        RateAyz = -gx
-	        RateAxz_avg = (RateAxz + previous_RateAxz) / 2
-	        RateAyz_avg = (RateAyz + previous_RateAyz) / 2
-	        previous_RateAxz = RateAxz
-	        previous_RateAyz = RateAyz
-	        wGyro = 15
-	        Axz = previous_Axz + (RateAxz_avg * 2.5 * math.pow(10, -6))
-	        Ayz = previous_Ayz + (RateAyz_avg * 2.5 * math.pow(10, -6))
-	        previous_Axz = Axz
-	        previous_Ayz = Ayz
-	        RxGyro = 1 / math.sqrt(1 + math.pow((1 / math.tan(Axz)) , 2) * math.pow((1 / math.cos(Ayz)) , 2))
-	        RyGyro = 1 / math.sqrt(1 + math.pow((1 / math.tan(Ayz)) , 2) * math.pow((1 / math.cos(Axz)) , 2))
-	        if previous_RzEst < 0:
-	            RzGyro = - math.sqrt(1 - math.pow(RxGyro , 2) - math.pow(RyGyro , 2))
-	        else:
-	            RzGyro = math.sqrt(1 - math.pow(RxGyro , 2) - math.pow(RyGyro , 2))
-	        RxEst = (ax_norm + RxGyro * wGyro) / (1 + wGyro)
-	        RyEst = (ay_norm + RyGyro * wGyro) / (1 + wGyro)
-	        RzEst = (az_norm + RzGyro * wGyro) / (1 + wGyro)
-	        R = math.sqrt(math.pow(RxEst,2) + math.pow(RyEst,2) + math.pow(RzEst,2))
-	        RxEst_norm = RxEst / R
-	        RyEst_norm = RyEst / R
-	        RzEst_norm = RzEst / R
+		previous_RxEst_initial = 0
+		previous_RyEst_initial = 0
+		previous_RzEst_initial = 1
+		mag_Rest_initial = math.sqrt(math.pow(previous_RxEst_initial,2) + math.pow(previous_RyEst_initial,2) + math.pow(previous_RzEst_initial,2))
+		previous_RxEst = (previous_RxEst_initial / mag_Rest_initial)
+		previous_RyEst = (previous_RyEst_initial / mag_Rest_initial)
+		previous_RzEst = (previous_RzEst_initial / mag_Rest_initial)
+		previous_RateAxz = 0
+		previous_RateAyz = 0
+		previous_Axz = math.atan2(previous_RxEst , previous_RzEst)
+		previous_Ayz = math.atan2(previous_RyEst , previous_RzEst)
+		RxEst_norm = 0
+		RyEst_norm = 0
+		RzEst_norm = 0
+		while True:
+			ax, ay, az, gx, gy, gz = self.readAccelerometerGyroData()
+			mag_Racc = math.sqrt(math.pow(ax,2) + math.pow(ay,2) + math.pow(az,2))
+			ax_norm = ax / mag_Racc
+			ay_norm = ay / mag_Racc
+			az_norm = az / mag_Racc
+			RateAxz = gy
+			RateAyz = -gx
+			RateAxz_avg = (RateAxz + previous_RateAxz) / 2
+			RateAyz_avg = (RateAyz + previous_RateAyz) / 2
+			previous_RateAxz = RateAxz
+			previous_RateAyz = RateAyz
+			wGyro = 15
+			Axz = previous_Axz + (RateAxz_avg * 2.5 * math.pow(10, -6))
+			Ayz = previous_Ayz + (RateAyz_avg * 2.5 * math.pow(10, -6))
+			previous_Axz = Axz
+			previous_Ayz = Ayz
+			RxGyro = 1 / math.sqrt(1 + math.pow((1 / math.tan(Axz)) , 2) * math.pow((1 / math.cos(Ayz)) , 2))
+			RyGyro = 1 / math.sqrt(1 + math.pow((1 / math.tan(Ayz)) , 2) * math.pow((1 / math.cos(Axz)) , 2))
+			if previous_RzEst < 0:
+				RzGyro = - math.sqrt(1 - math.pow(RxGyro , 2) - math.pow(RyGyro , 2))
+			else:
+				RzGyro = math.sqrt(1 - math.pow(RxGyro , 2) - math.pow(RyGyro , 2))
+			RxEst = (ax_norm + RxGyro * wGyro) / (1 + wGyro)
+			RyEst = (ay_norm + RyGyro * wGyro) / (1 + wGyro)
+			RzEst = (az_norm + RzGyro * wGyro) / (1 + wGyro)
+			R = math.sqrt(math.pow(RxEst,2) + math.pow(RyEst,2) + math.pow(RzEst,2))
+			RxEst_norm = RxEst / R
+			RyEst_norm = RyEst / R
+			RzEst_norm = RzEst / R
 
-            stringbuilder = str(RxEst_norm) + "," + str(RyEst_norm) + "," + str(RzEst_norm)
-            print(stringbuilder)
+			stringbuilder = str(RxEst_norm) + "," + str(RyEst_norm) + "," + str(RzEst_norm)
+			print(stringbuilder)
 
-	        time.sleep_ms(30)
-	        previous_RxEst = RxEst_norm
-	        previous_RyEst = RyEst_norm
-	        previous_RzEst = RzEst_norm 
+			time.sleep_ms(30)
+			previous_RxEst = RxEst_norm
+			previous_RyEst = RyEst_norm
+			previous_RzEst = RzEst_norm 
