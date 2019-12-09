@@ -11,10 +11,10 @@ def run():
 	pin = machine.Pin(12, machine.Pin.OUT)
 	print("hejfdsalk")
 	while(True):
-		pin.high()
+		pin.value(1)
 		#sam.send_Message("I AM SAM")
 		time.sleep(2)
-		pin.low()
+		pin.value(0)
 
 
 if __name__ == '__main__':
