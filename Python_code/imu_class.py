@@ -41,7 +41,6 @@ class IMU:
 		devices = self.i2c.scan()
 		print("Connected I2C Devices", devices)
 		self.config()
-		self.uart = softwareUart.UartCom()
 
 	def config(self):
 		self.selectBank(0)
@@ -194,11 +193,10 @@ class IMU:
 			RyEst_norm = RyEst / R
 			RzEst_norm = RzEst / R
 
-			stringbuilder = str(RxEst_norm) + "," + str(RyEst_norm) + "," + str(RzEst_norm) + "\n"
-			#print(stringbuilder)
-			self.uart.send_Message(stringbuilder)
+			stringbuilder = str(RxEst_norm) + "," + str(RyEst_norm) + "," + str(RzEst_norm)
+			print(stringbuilder)
 
 			time.sleep_ms(30)
 			previous_RxEst = RxEst_norm
 			previous_RyEst = RyEst_norm
-			previous_RzEst = RzEst_norm 
+			previous_RzEst = RzEst_norm
