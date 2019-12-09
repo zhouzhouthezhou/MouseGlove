@@ -1,6 +1,7 @@
-import struct
+
 import time
 import math
+import struct
 import softwareUart
 
 from machine import I2C, Pin

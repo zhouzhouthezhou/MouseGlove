@@ -31,7 +31,7 @@ file_system_dir = None
 # will not be copied to the MicroPython instance. So, you can run this
 # script from the file_system_dir folder.
 
-excludes = ['REPLace.py',
+excludes = ['replace.py',
             'archive',
             'video',
             'thumbs',
@@ -44,7 +44,7 @@ excludes = ['REPLace.py',
 includes = []
 includes.append('boot.py')
 includes.append('main.py')
-includes.append('IMUclass.py')
+#includes.append('IMUclass.py')
 includes.append('softwareUart.py')
 
 # The following variable reduces upload size.
